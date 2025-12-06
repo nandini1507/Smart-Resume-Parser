@@ -6,6 +6,7 @@ import json
 import pandas as pd
 
 
+
 # -----------------------------
 # Configuration
 # -----------------------------
@@ -104,25 +105,21 @@ if uploaded_file is not None:
     base_name = Path(uploaded_file.name).stem
     json_path = Path(f"outputs/json/{base_name}.json")
     csv_path = Path(f"outputs/csv/{base_name}.csv")
-    import os
-from pathlib import Path
-import pandas as pd
-import json
 
-# Define paths FIRST
-json_path = Path(f"outputs/json/{base_name}.json")
-csv_path = Path(f"outputs/csv/{base_name}.csv")
+    # Define paths FIRST
+    json_path = Path(f"outputs/json/{base_name}.json")
+    csv_path = Path(f"outputs/csv/{base_name}.csv")
 
-# Create folders
-os.makedirs(json_path.parent, exist_ok=True)
-os.makedirs(csv_path.parent, exist_ok=True)
+    # Create folders
+    os.makedirs(json_path.parent, exist_ok=True)
+    os.makedirs(csv_path.parent, exist_ok=True)
 
 # Save JSON file
-with open(json_path, "w", encoding="utf-8") as f:
-    json.dump(data, f, indent=2)
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
 
 # Prepare CSV summary
-summary = {
+    summary = {
     "email": data.get("email", ""),
     "phone": data.get("phone", ""),
     "skills": "; ".join(data.get("skills", [])),
@@ -131,15 +128,15 @@ summary = {
 }
 
 # Create CSV file properly
-df = pd.DataFrame([summary])
-df.to_csv(csv_path, index=False)
+    df = pd.DataFrame([summary])
+    df.to_csv(csv_path, index=False)
 
 # Download JSON
-with open(json_path, "rb") as f:
-    st.download_button("⬇️ Download JSON", f.read(),
+    with open(json_path, "rb") as f:
+        st.download_button("⬇️ Download JSON", f.read(),
                        file_name=json_path.name, mime="application/json")
 
 # Download CSV
-with open(csv_path, "rb") as f:
-    st.download_button("⬇️ Download CSV summary", f.read(),
+    with open(csv_path, "rb") as f:
+        st.download_button("⬇️ Download CSV summary", f.read(),
                        file_name=csv_path.name, mime="text/csv")
