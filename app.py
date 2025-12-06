@@ -104,20 +104,42 @@ if uploaded_file is not None:
     base_name = Path(uploaded_file.name).stem
     json_path = Path(f"outputs/json/{base_name}.json")
     csv_path = Path(f"outputs/csv/{base_name}.csv")
+    import os
+from pathlib import Path
+import pandas as pd
+import json
 
-    with open(json_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+# Define paths FIRST
+json_path = Path(f"outputs/json/{base_name}.json")
+csv_path = Path(f"outputs/csv/{base_name}.csv")
 
-    summary = {
-        "email": data.get("email", ""),
-        "phone": data.get("phone", ""),
-        "skills": "; ".join(data.get("skills", [])),
-        "education_count": len(data.get("education", [])),
-        "experience_count": len(data.get("experience", [])),
-    }
-    pd.DataFrame([summary]).to_csv(csv_path, index=False)
-    with open(json_path, "rb") as f:
-        st.download_button("⬇️ Download JSON", f.read(), file_name=json_path.name, mime="application/json")
+# Create folders
+os.makedirs(json_path.parent, exist_ok=True)
+os.makedirs(csv_path.parent, exist_ok=True)
 
-    with open(csv_path, "rb") as f:
-        st.download_button("⬇️ Download CSV summary", f.read(), file_name=csv_path.name, mime="text/csv")
+# Save JSON file
+with open(json_path, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2)
+
+# Prepare CSV summary
+summary = {
+    "email": data.get("email", ""),
+    "phone": data.get("phone", ""),
+    "skills": "; ".join(data.get("skills", [])),
+    "education_count": len(data.get("education", [])),
+    "experience_count": len(data.get("experience", [])),
+}
+
+# Create CSV file properly
+df = pd.DataFrame([summary])
+df.to_csv(csv_path, index=False)
+
+# Download JSON
+with open(json_path, "rb") as f:
+    st.download_button("⬇️ Download JSON", f.read(),
+                       file_name=json_path.name, mime="application/json")
+
+# Download CSV
+with open(csv_path, "rb") as f:
+    st.download_button("⬇️ Download CSV summary", f.read(),
+                       file_name=csv_path.name, mime="text/csv")
