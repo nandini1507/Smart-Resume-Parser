@@ -41,7 +41,7 @@ Resume-Parser/
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Installation / app working
 
 Clone the repository:
 ```bash
